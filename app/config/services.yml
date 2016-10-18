@@ -7,3 +7,8 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+    app_chat.topic_sample_service:
+        class: AppBundle\Topic\AppTopic
+        tags:
+          - { name: gos_web_socket.topic }

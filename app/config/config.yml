@@ -66,3 +66,11 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+gos_web_socket:
+    server:
+        host: 192.168.0.59
+        port: 8888
+        router:
+            resources:
+                - "@AppBundle/Resources/config/pubsub/routing.yml"

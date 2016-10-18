@@ -1,0 +1,10 @@
+services:
+    app_chat.topic_sample_service:
+        class: AppBundle\Topic\AppTopic
+        tags:
+            - { name: gos_web_socket.topic }
+
+    app_chat.rpc_sample_service:
+        class: AppBundle\Rpc\AppRpc
+        tags:
+            - { name: gos_web_socket.rpc }
