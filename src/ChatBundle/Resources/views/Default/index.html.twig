@@ -34,7 +34,7 @@
     }) ;
 
     // Quand un client se deconnecte, on affiche l'information
-    socket.on('disconnect', function(pseudo) {
+    socket.on('dc', function(pseudo) {
         $('#zone_chat').append('<p><em>' + pseudo + ' a quitté le Chat !</em></p>');
     }) ;
 
