@@ -17,20 +17,21 @@ var listUsers = [] ;
 // Quand un client se connecte, on le note dans la console
 io.sockets.on('connection', function (socket) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
-    socket.on('username', function(pseudo) {
+    socket.on('username', function(user) {
         var ID = Math.random().toString(16).slice(5) ;
         listUsers.push({
             "socket" : socket,
-            "pseudo" : pseudo,
+            "pseudo" : user.pseudo,
+            "img" : user.img,
             "ID": ID
         });
-        socket.broadcast.emit('username', pseudo) ;
+        socket.broadcast.emit('username', user.pseudo) ;
     });
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
     socket.on('message', function (message) {
         var userIndice = getUser(socket) ;
-        socket.broadcast.emit('message', {pseudo: listUsers[userIndice]['pseudo'], message: message}) ;
+        socket.broadcast.emit('message', {pseudo: listUsers[userIndice]['pseudo'], avatar: listUsers[userIndice]['img'], message: message}) ;
     });
 
     socket.on('disconnect', function() {

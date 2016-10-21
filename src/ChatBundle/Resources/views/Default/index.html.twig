@@ -7,7 +7,7 @@
 
 <body>
 <h1>Chat mybox !</h1>
-<form action="/" method="post" id="formulaire_chat">
+<form action="#" method="post" id="formulaire_chat">
     <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
     <input type="submit" id="envoi_message" value="Envoyer" />
 </form>
@@ -23,9 +23,14 @@
 
 <script>
     var socket = io.connect('http://192.168.0.59:8080') ;
-    var pseudo = prompt('Quel est votre pseudo ?') ;
+    var pseudo ="{{ user.username }}" ;
+    {% if user.avatar is defined and user.avatar is not null %}
+        var avatar = "{{ user.avatarWebPath }}";
+    {% else %}
+        var avatar = "{{ user.defaultAvatar }}";
+    {% endif %}
 
-    socket.emit('username', pseudo) ;
+    socket.emit('username', {'pseudo':pseudo, 'img': avatar}) ;
     document.title = pseudo + ' - ' + document.title ;
 
     // Quand un nouveau client se connecte, on affiche l'information
@@ -40,21 +45,21 @@
 
     // Quand on reçoit un message, on l'insère dans la page
     socket.on('message', function(data) {
-        insereMessage(data.pseudo, data.message) ;
+        insereMessage(data.pseudo, data.avatar, data.message) ;
     }) ;
 
     // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
     $('#formulaire_chat').submit(function () {
         var message = $('#message').val() ;
         socket.emit('message', message) ; // Transmet le message aux autres
-        insereMessage(pseudo, message) ; // Affiche le message aussi sur notre page
+        insereMessage(pseudo, avatar, message) ; // Affiche le message aussi sur notre page
         $('#message').val('').focus() ; // Vide la zone de Chat et remet le focus dessus
         return false; // Permet de bloquer l'envoi "classique" du formulaire
     });
 
     // Ajoute un message dans la page
-    function insereMessage(pseudo, message) {
-        $('#zone_chat').append('<p><strong>' + pseudo + '</strong> ' + message + '</p>') ;
+    function insereMessage(pseudo, avatar, message) {
+        $('#zone_chat').append('<p><span><img width="100px" style="border-radius:50%;" src="'+avatar+'"></span><strong>' + pseudo + '</strong> ' + message + '</p>') ;
     }
 </script>
 </body>
