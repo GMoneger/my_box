@@ -24,18 +24,19 @@
 <script>
     var socket = io.connect('http://192.168.0.59:8080') ;
     var pseudo ="{{ user.username }}" ;
+    var color ="{{ user.color }}" ;
     {% if user.avatar is defined and user.avatar is not null %}
         var avatar = "{{ user.avatarWebPath }}";
     {% else %}
         var avatar = "{{ user.defaultAvatar }}";
     {% endif %}
 
-    socket.emit('username', {'pseudo':pseudo, 'img': avatar}) ;
+    socket.emit('username', {'pseudo':pseudo, 'img': avatar, 'color': color}) ;
     document.title = pseudo + ' - ' + document.title ;
 
     // Quand un nouveau client se connecte, on affiche l'information
-    socket.on('username', function(pseudo) {
-        $('#zone_chat').append('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>') ;
+    socket.on('username', function(user) {
+        $('#zone_chat').append('<p style="background-color:'+user.color+'" ><em>' + user.pseudo + ' a rejoint le Chat !</em></p>') ;
     }) ;
 
     // Quand un client se deconnecte, on affiche l'information
@@ -45,21 +46,21 @@
 
     // Quand on reçoit un message, on l'insère dans la page
     socket.on('message', function(data) {
-        insereMessage(data.pseudo, data.avatar, data.message) ;
+        insereMessage(data.pseudo, data.avatar, data.color, data.message) ;
     }) ;
 
     // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
     $('#formulaire_chat').submit(function () {
         var message = $('#message').val() ;
         socket.emit('message', message) ; // Transmet le message aux autres
-        insereMessage(pseudo, avatar, message) ; // Affiche le message aussi sur notre page
+        insereMessage(pseudo, avatar, color, message) ; // Affiche le message aussi sur notre page
         $('#message').val('').focus() ; // Vide la zone de Chat et remet le focus dessus
         return false; // Permet de bloquer l'envoi "classique" du formulaire
     });
 
     // Ajoute un message dans la page
-    function insereMessage(pseudo, avatar, message) {
-        $('#zone_chat').append('<p><span><img width="100px" style="border-radius:50%;" src="'+avatar+'"></span><strong>' + pseudo + '</strong> ' + message + '</p>') ;
+    function insereMessage(pseudo, avatar, color, message) {
+        $('#zone_chat').append('<p><span><img width="100px" style="border-radius:50%;" src="'+avatar+'"></span><strong style="color:'+color+';">' + pseudo + '</strong> ' + message + '</p>') ;
     }
 </script>
 </body>

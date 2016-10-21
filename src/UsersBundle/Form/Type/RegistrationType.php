@@ -11,6 +11,7 @@ class RegistrationType extends AbstractType
         $builder
             ->add('firstname')
             ->add('lastname')
+            ->add('color')
             ->add('avatar', 'file', array('required' => false, 'label' => 'Avatar'));
     }
 

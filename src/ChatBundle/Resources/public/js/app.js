@@ -23,15 +23,16 @@ io.sockets.on('connection', function (socket) {
             "socket" : socket,
             "pseudo" : user.pseudo,
             "img" : user.img,
+            "color" : user.color,
             "ID": ID
         });
-        socket.broadcast.emit('username', user.pseudo) ;
+        socket.broadcast.emit('username', {pseudo:user.pseudo, color:user.color}) ;
     });
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
     socket.on('message', function (message) {
         var userIndice = getUser(socket) ;
-        socket.broadcast.emit('message', {pseudo: listUsers[userIndice]['pseudo'], avatar: listUsers[userIndice]['img'], message: message}) ;
+        socket.broadcast.emit('message', {pseudo: listUsers[userIndice]['pseudo'], avatar: listUsers[userIndice]['img'], color: listUsers[userIndice]['color'], message: message}) ;
     });
 
     socket.on('disconnect', function() {

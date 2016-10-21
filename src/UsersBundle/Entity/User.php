@@ -50,6 +50,12 @@ class User extends BaseUser
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
+    protected $color;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     */
     protected $img;
 
     /**
@@ -161,6 +167,29 @@ class User extends BaseUser
     public function getFirstname()
     {
         return $this->firstname;
+    }
+
+    /**
+     * Set the value of color.
+     *
+     * @param string $color
+     * @return \UsersBundle\Entity\User
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of color.
+     *
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
     }
 
     /**
