@@ -19,3 +19,4 @@ parameters:
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     node_server: http://192.168.0.59:8080
+    media_url: http://mybox.gmo/

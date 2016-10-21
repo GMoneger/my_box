@@ -26,6 +26,7 @@ use FOS\UserBundle\Model\User as BaseUser;
  */
 class User extends BaseUser
 {
+
     /**
      * @ORM\Id
      * @ORM\Column(name="id",type="integer")
@@ -295,5 +296,15 @@ class User extends BaseUser
         $guesser = ExtensionGuesser::getInstance();
 
         return $guesser->guess($type);
+    }
+
+    public function getDefaultAvatar() {
+        global $kernel ;
+        return $kernel->getContainer()->getParameter('media_url').'avatar/default_avatar.jpg' ;
+    }
+
+    public function getAvatarWebPath() {
+        global $kernel ;
+        return$kernel->getContainer()->getParameter('media_url').'avatar/'.$this->getImg() ;
     }
 }

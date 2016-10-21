@@ -104,3 +104,10 @@ fos_user:
     from_email:
         address:        gmo+mybox@emakina.fr
         sender_name:    MyBox
+
+sonata_admin:
+    title:      MyBox
+    #title_logo: /bundles/mongoboxcore/img/logo/mongo-logo-black-little.jpg
+    templates:
+        # default global templates
+        layout:  AppBundle:Admin:standard_layout.html.twig

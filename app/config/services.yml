@@ -11,3 +11,14 @@ services:
         class: UsersBundle\Form\Type\RegistrationType
         tags:
             - { name: form.type }
+
+    sonata.admin.users:
+            class: UsersBundle\Admin\UsersAdmin
+            tags:
+                - { name: sonata.admin, manager_type: orm, group: "Administration", label: "Membres" }
+            arguments:
+                - ~
+                - UsersBundle\Entity\User
+                - ~
+            calls:
+                - [ setTranslationDomain, [UsersBundle]]
