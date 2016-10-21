@@ -20,3 +20,4 @@
 /app/cache/*
 !/app/logs
 /app/logs/*
+/web/avatar
