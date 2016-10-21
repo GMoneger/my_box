@@ -1,3 +1,13 @@
+group:
+    resource: "@GroupBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+user:
+    resource: "@UsersBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 chat:
     resource: "@ChatBundle/Controller/"
     type:     annotation
@@ -6,3 +16,14 @@ chat:
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /admin
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+fos_user_group:
+    resource: "@FOSUserBundle/Resources/config/routing/group.xml"
+    prefix: /group
