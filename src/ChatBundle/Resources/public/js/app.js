@@ -29,6 +29,11 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.emit('username', {pseudo:user.pseudo, color:user.color}) ;
     });
 
+    socket.on('show-users', function(user) {
+        io.emit('show-users', getAllUser()) ;
+    });
+
+
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
     socket.on('message', function (message) {
         var userIndice = getUser(socket) ;
@@ -52,6 +57,20 @@ function getUser(socket) {
         }
     }
     return -1 ;
+}
+
+function getAllUser() {
+    var l = listUsers.length ;
+    var listName = [] ;
+
+    for (var i=0 ; i<l ; i++) {
+        listName.push({
+            "name" : listUsers[i]['pseudo'],
+            "ID" : listUsers[i]['ID']
+        });
+    }
+
+    return listName ;
 }
 
 server.listen(8080) ;
