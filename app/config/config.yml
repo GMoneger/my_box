@@ -102,8 +102,8 @@ fos_user:
             # type: mybox_user_profile
 
     from_email:
-        address:        gmo+mybox@emakina.fr
-        sender_name:    MyBox
+        address:        no-reply@greedom.xyz
+        sender_name:    Dat Box
 
 sonata_admin:
     title:      MyBox
