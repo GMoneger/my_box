@@ -1,0 +1,19 @@
+
+<script src="{{ asset("bundles/chat/js/jquery.min.js") }}"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script src="{{ asset("bundles/cinema/js/liste-film.js") }}"></script>
+
+<h1>Page films</h1>
+<div>
+    <h2>Liste des films</h2>
+    <div id="container-films">Chargement...</div>
+</div>
+<div id="ajout-film">
+    <h2>Ajouter un film</h2>
+    <div class="form-ajout-film">
+        <label for="ajout-titre-film">Titre du film</label>
+        <input id="ajout-titre-film" type="text"/>
+    </div>
+    <button id="btn-ajout-film">Ajouter</button>
+</div>
+

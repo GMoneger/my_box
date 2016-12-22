@@ -1,3 +1,8 @@
+cinema:
+    resource: "@CinemaBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 group:
     resource: "@GroupBundle/Controller/"
     type:     annotation
