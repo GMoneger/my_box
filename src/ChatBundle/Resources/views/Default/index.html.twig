@@ -1,100 +1,98 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Socket.io</title>
-</head>
+{% extends 'AppBundle::base.html.twig' %}
 
-<body>
-<h1>Chat mybox !</h1>
-<form action="#" method="post" id="formulaire_chat">
-    <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
-    <input type="submit" id="envoi_message" value="Envoyer" />
-</form>
+{% block title %}CHATBOX!{% endblock title %}
 
-<section id="zone_chat">
+{% block body %}
+    <h1>Chat mybox !</h1>
+    <form action="#" method="post" id="formulaire_chat">
+        <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
+        <input type="submit" id="envoi_message" value="Envoyer" />
+    </form>
 
-</section>
-<section id="zone_user">
-<ul>
+    <section id="zone_chat">
 
-</ul>
-</section>
+    </section>
+    <section id="zone_user">
+    <ul>
+
+    </ul>
+    </section>
 
 
+    {% block script %}
+        <script src="{{ asset("bundles/chat/js/jquery.min.js") }}"></script>
+        <script src="{{ node_server }}/socket.io/socket.io.js"></script>
 
-<script src="{{ asset("bundles/chat/js/jquery.min.js") }}"></script>
-<script src="{{ node_server }}/socket.io/socket.io.js"></script>
+        <script>
+            //var socket = io.connect('http://192.168.0.59:8080') ;
+            var socket = io.connect('{{ node_server }}') ;
+            var pseudo ="{{ user.username }}" ;
+            var color ="{{ user.color }}" ;
+            {% if user.avatar is defined and user.avatar is not null %}
+                var avatar = "{{ user.avatarWebPath }}";
+            {% else %}
+                var avatar = "{{ user.defaultAvatar }}";
+            {% endif %}
 
-<script>
-    //var socket = io.connect('http://192.168.0.59:8080') ;
-    var socket = io.connect('http://192.168.0.59:8080') ;
-    var pseudo ="{{ user.username }}" ;
-    var color ="{{ user.color }}" ;
-    {% if user.avatar is defined and user.avatar is not null %}
-        var avatar = "{{ user.avatarWebPath }}";
-    {% else %}
-        var avatar = "{{ user.defaultAvatar }}";
-    {% endif %}
+            socket.emit('username', {'pseudo':pseudo, 'img': avatar, 'color': color}) ;
+            document.title = pseudo + ' - ' + document.title ;
 
-    socket.emit('username', {'pseudo':pseudo, 'img': avatar, 'color': color}) ;
-    document.title = pseudo + ' - ' + document.title ;
+            socket.emit('show-users') ;
 
-    socket.emit('show-users') ;
+            // Quand un nouveau client se connecte, on affiche l'information
+            socket.on('username', function(user) {
+                $('#zone_chat').append('<p style="background-color:'+user.color+'" ><em>' + user.pseudo + ' a rejoint le Chat !</em></p>') ;
+            }) ;
 
-    // Quand un nouveau client se connecte, on affiche l'information
-    socket.on('username', function(user) {
-        $('#zone_chat').append('<p style="background-color:'+user.color+'" ><em>' + user.pseudo + ' a rejoint le Chat !</em></p>') ;
-    }) ;
+            socket.on('show-users', function(users) {
+                console.log(users) ;
+                var l = users.length ;
+                $('#zone_user ul').html('') ;
 
-    socket.on('show-users', function(users) {
-        console.log(users) ;
-        var l = users.length ;
-        $('#zone_user ul').html('') ;
+                for (var i=0 ; i<l ; i++) {
+                    $('#zone_user ul').append('<li><p>' + users[i]['name'] +'</p></li>') ;
+                }
+            });
 
-        for (var i=0 ; i<l ; i++) {
-            $('#zone_user ul').append('<li><p>' + users[i]['name'] +'</p></li>') ;
-        }
-    });
+            // Quand un client se deconnecte, on affiche l'information
+            socket.on('dc', function(pseudo) {
+                $('#zone_chat').append('<p><em>' + pseudo + ' a quitté le Chat !</em></p>') ;
+                socket.emit('show-users') ;
+            }) ;
 
-    // Quand un client se deconnecte, on affiche l'information
-    socket.on('dc', function(pseudo) {
-        $('#zone_chat').append('<p><em>' + pseudo + ' a quitté le Chat !</em></p>') ;
-        socket.emit('show-users') ;
-    }) ;
+            // Quand on reçoit un message, on l'insère dans la page
+            socket.on('message', function(data) {
+                if (!Notification) {
+                    alert('Desktop notifications not available in your browser. Try Chromium.');
+                    return;
+                }
 
-    // Quand on reçoit un message, on l'insère dans la page
-    socket.on('message', function(data) {
-        if (!Notification) {
-            alert('Desktop notifications not available in your browser. Try Chromium.');
-            return;
-        }
+                if (Notification.permission !== "granted") {
+                    Notification.requestPermission();
+                }
 
-        if (Notification.permission !== "granted") {
-            Notification.requestPermission();
-        }
+                var notification = new Notification('Message from '+data.pseudo+'', {
+                    icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+                    body: data.message,
+                });
 
-        var notification = new Notification('Message from '+data.pseudo+'', {
-            icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-            body: data.message,
-        });
+                insereMessage(data.pseudo, data.avatar, data.color, data.message) ;
+            }) ;
 
-        insereMessage(data.pseudo, data.avatar, data.color, data.message) ;
-    }) ;
+            // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+            $('#formulaire_chat').submit(function () {
+                var message = $('#message').val() ;
+                socket.emit('message', message) ; // Transmet le message aux autres
+                insereMessage(pseudo, avatar, color, message) ; // Affiche le message aussi sur notre page
+                $('#message').val('').focus() ; // Vide la zone de Chat et remet le focus dessus
+                return false; // Permet de bloquer l'envoi "classique" du formulaire
+            });
 
-    // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
-    $('#formulaire_chat').submit(function () {
-        var message = $('#message').val() ;
-        socket.emit('message', message) ; // Transmet le message aux autres
-        insereMessage(pseudo, avatar, color, message) ; // Affiche le message aussi sur notre page
-        $('#message').val('').focus() ; // Vide la zone de Chat et remet le focus dessus
-        return false; // Permet de bloquer l'envoi "classique" du formulaire
-    });
+            // Ajoute un message dans la page
+            function insereMessage(pseudo, avatar, color, message) {
+                $('#zone_chat').append('<p><span><img width="100px" style="border-radius:50%;" src="'+avatar+'"></span><strong style="color:'+color+';">' + pseudo + '</strong> ' + message + '</p>') ;
+            }
+        </script>
+    {% endblock script %}
 
-    // Ajoute un message dans la page
-    function insereMessage(pseudo, avatar, color, message) {
-        $('#zone_chat').append('<p><span><img width="100px" style="border-radius:50%;" src="'+avatar+'"></span><strong style="color:'+color+';">' + pseudo + '</strong> ' + message + '</p>') ;
-    }
-</script>
-</body>
-</html>
+{% endblock body %}
