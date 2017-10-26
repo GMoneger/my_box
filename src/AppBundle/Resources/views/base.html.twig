@@ -6,8 +6,10 @@
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body class="{% block bodyclass %}{% endblock bodyclass %}">
-        {% block body %}{% endblock %}
+    <body>
+        {% block body %}
+            {% block script %}{% endblock script %}
+        {% endblock body %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>
