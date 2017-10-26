@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="cinema")
      */
     public function indexAction()
     {
@@ -19,26 +19,10 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/room1")
+     * @Route("/salle/{type_film}", name="room")
      */
-    public function room1Action()
+    public function roomAction($type_film)
     {
-        return $this->render('CinemaBundle:Default/rooms:room1.html.twig');
-    }
-
-    /**
-     * @Route("/room2")
-     */
-    public function room2Action()
-    {
-        return $this->render('CinemaBundle:Default/rooms:room2.html.twig');
-    }
-
-    /**
-     * @Route("/room3")
-     */
-    public function room3Action()
-    {
-        return $this->render('CinemaBundle:Default/rooms:room3.html.twig');
+        return $this->render('CinemaBundle:Default/rooms:room.html.twig', array('type_salle' => $type_film));
     }
 }

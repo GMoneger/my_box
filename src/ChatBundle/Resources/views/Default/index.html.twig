@@ -27,8 +27,8 @@
 <script src="{{ node_server }}/socket.io/socket.io.js"></script>
 
 <script>
-    //var socket = io.connect('http://192.168.0.59:8080') ;
-    var socket = io.connect('http://192.168.0.59:8080') ;
+    //var socket = io.connect('http://192.168.0.118:8080') ;
+    var socket = io.connect('http://192.168.0.118:8080') ;
     var pseudo ="{{ user.username }}" ;
     var color ="{{ user.color }}" ;
     {% if user.avatar is defined and user.avatar is not null %}

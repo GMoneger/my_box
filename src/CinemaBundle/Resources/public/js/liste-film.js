@@ -15,7 +15,16 @@ firebase.database().ref('Films').on('value', function(snapshot) {
     containerFilm = $('#container-films') ;
     containerFilm.html('') ;
     $.each(listFilm, function(key,val) {
-        containerFilm.append('<p><span id="film-titre-'+index+'">'+val.Titre+'</span> (<span id="film-vote-'+index+'">'+val.Vote+'</span>)<button onClick="sendClickPlus('+index+', \''+key+'\')" class="btn-plus btn-plus-'+index+'">+</button><button onClick="sendClickMoins('+index+', \''+key+'\')" class="btn-moins btn-moins-'+index+'">-</button><button onClick="sendClickDel('+index+', \''+key+'\')" class="btn-del btn-del-'+index+'">Supprimer</button></p>')
+        console.log(val) ;
+        containerFilm.append('<p>' +
+            '<span id="film-type-'+index+'">'+val.Type+'</span> ' +
+            '<span id="film-titre-'+index+'">'+val.Titre+'</span> ' +
+            '(<span id="film-vote-'+index+'">'+val.Vote+'</span>)' +
+            '<a id="film-lien-'+index+'" href="'+val.Lien+'"  class="">lien</a>' +
+            '<button onClick="sendClickPlus('+index+', \''+key+'\')" class="btn-plus btn-plus-'+index+'">+</button>' +
+            '<button onClick="sendClickMoins('+index+', \''+key+'\')" class="btn-moins btn-moins-'+index+'">-</button>' +
+            '<button onClick="sendClickDel('+index+', \''+key+'\')" class="btn-del btn-del-'+index+'">Supprimer</button><' +
+            '/p>') ;
         index++ ;
     }) ;
 });
@@ -33,32 +42,42 @@ Object.size = function(obj) {
 function sendClickPlus(index, key) {
     thisFilmTitre = $('#film-titre-'+index).html() ;
     thisFilmVote = $('#film-vote-'+index).html() ;
+    thisFilmType = $('#film-type-'+index).html() ;
+    thisFilmLien = $('#film-lien-'+index).attr('href') ;
 
     firebase.database().ref('Films/'+key).set({
         Titre : thisFilmTitre,
-        Vote  : parseInt(thisFilmVote) +1
+        Vote  : parseInt(thisFilmVote) +1,
+        Lien : thisFilmLien,
+        Type : thisFilmType
     });
 }
 
 function sendClickMoins(index, key) {
     thisFilmTitre = $('#film-titre-'+index).html() ;
     thisFilmVote = $('#film-vote-'+index).html() ;
+    thisFilmType = $('#film-type-'+index).html() ;
+    thisFilmLien = $('#film-lien-'+index).attr('href') ;
 
     firebase.database().ref('Films/'+key).set({
         Titre : thisFilmTitre,
-        Vote  : parseInt(thisFilmVote) -1
+        Vote  : parseInt(thisFilmVote) -1,
+        Lien : thisFilmLien,
+        Type : thisFilmType
     });
 }
 
-function sendClickDel(key) {
-    firebase.database().ref('Films/Film '+key).set({}) ;
+function sendClickDel(index, key) {
+    console.log(index, key) ;
+    firebase.database().ref('Films/'+key).set({}) ;
 }
 
-function addFilm(titre) {
-    var nbFilm = parseInt(getNumberFilm()) +1 ;
-    firebase.database().ref('Films/Film '+nbFilm).set({
+function addFilm(titre, lien, type) {
+    firebase.database().ref('Films').push({
         Titre : titre,
-        Vote  : 0
+        Vote  : 0,
+        Lien : lien,
+        Type : type
     });
 }
 
@@ -74,20 +93,45 @@ function getNumberFilm() {
 jQuery(function ($) {
     $('#btn-ajout-film').on('click', function(){
         var inputTitreFilm  = $('#ajout-titre-film') ;
+        var inputLienFilm   = $('#ajout-lien-film') ;
+        var inputTypeFilm   = $('#ajout-type-film') ;
         var errorMessage    = $('.error-message') ;
+        var isOkTitre       = true ;
+        var isOkType        = true ;
+        var isOkLien        = true ;
 
-        if (inputTitreFilm.val() != '') {
-            if(errorMessage.length == 0){
-                errorMessage.empty() ;
-                inputTitreFilm.css('border','1px solid black') ;
-            }
+        errorMessage.empty() ;
 
-            addFilm(inputTitreFilm.val()) ;
-        } else {
+        // Test titre
+        if (inputTitreFilm.val() == '') {
             inputTitreFilm.css('border','1px solid red') ;
-            if(errorMessage.length == 0){
-                inputTitreFilm.parent().append('<span class="error-message">Renseignez un titre pour le film</span>');
-            }
+            inputTitreFilm.parent().append('<span class="error-message">Renseignez un titre pour le film</span>');
+            isOkTitre = false ;
+        }
+
+        //Test type
+        if (inputTypeFilm.val() == null) {
+            inputTypeFilm.css('border','1px solid red') ;
+            inputTypeFilm.parent().append('<span class="error-message">Renseignez un type pour le film</span>');
+            isOkType = false ;
+        }
+
+        // Test lien
+        if (inputLienFilm.val() == '') {
+            inputLienFilm.css('border','1px solid red') ;
+            inputLienFilm.parent().append('<span class="error-message">Renseignez un lien pour le film</span>');
+            isOkLien = false ;
+        }
+
+        console.log(isOkTitre, isOkType, isOkLien) ;
+
+        if (isOkLien && isOkTitre && isOkType) {
+            inputTitreFilm.css('border','1px solid gray') ;
+            inputTypeFilm.css('border','1px solid gray') ;
+            inputLienFilm.css('border','1px solid gray') ;
+            addFilm(inputTitreFilm.val(), inputLienFilm.val(), inputTypeFilm.val())
+        } else {
+            console.log('Au moins 1 ,\'est pas bon') ;
         }
 
     }) ;

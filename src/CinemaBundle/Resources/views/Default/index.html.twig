@@ -5,15 +5,33 @@
 
 <h1>Page films</h1>
 <div>
-    <h2>Liste des films</h2>
+    <h2>Liste des films disponibles</h2>
     <div id="container-films">Chargement...</div>
 </div>
 <div id="ajout-film">
     <h2>Ajouter un film</h2>
     <div class="form-ajout-film">
-        <label for="ajout-titre-film">Titre du film</label>
-        <input id="ajout-titre-film" type="text"/>
+        <
+            <label for="ajout-titre-film">Titre du film</label>
+            <input id="ajout-titre-film" type="text"/>
+
+            <label for="ajout-type-film">Type du film</label>
+            <select id="ajout-type-film" >
+                <option value="" disabled selected>Selectionnez le type de film</option>
+                <option value="Aventure">Aventure</option>
+                <option value="Anime">Anime</option>
+                <option value="Autre">Autre</option>
+            </select>
+
+            <label for="ajout-lien-film">Lien du film</label>
+            <input id="ajout-lien-film" type="text"/>
+        >
+        <button type="button" id="btn-ajout-film">Ajouter</button>
     </div>
-    <button id="btn-ajout-film">Ajouter</button>
+</div>
+
+<div id="liste-room">
+    <h2>Liste des rooms</h2>
+    <a href="" title="Allez dans la room 1">Salle 1 (Animé)</a>
 </div>
 
